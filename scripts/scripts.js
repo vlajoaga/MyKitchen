@@ -11,10 +11,29 @@ import {
   waitForLCP,
   loadBlocks,
   loadCSS,
-} from './lib-franklin.js';
+  getMetadata,
+} from "./lib-franklin.js";
 
 const LCP_BLOCKS = []; // add your LCP blocks to the list
 window.hlx.RUM_GENERATION = 'project-1'; // add your RUM generation information here
+
+console.log('Metadata test');
+console.log(getMetadata("template"));
+
+/**
+ * move a block from its' section to a separate section
+ *
+ * @param {Element} main
+ * @param {string} className
+ */
+function extractBlockToSection(main, className) {
+  const block = main.querySelector(className);
+  const currentBlockSection = block.parentElement;
+  const newBlockSection = document.createElement("div");
+  newBlockSection.append(block);
+
+  main.insertBefore(newBlockSection, currentBlockSection.nextElementSibling);
+}
 
 /**
  * Builds hero block and prepends to main in a new section.
@@ -36,8 +55,13 @@ function buildHeroBlock(main) {
  * @param {Element} main The container element
  */
 function buildAutoBlocks(main) {
+  const template = getMetadata("template");
   try {
-    buildHeroBlock(main);
+    //buildHeroBlock(main);
+    if (template === "adventure") {
+      extractBlockToSection(main, ".tabs");
+      extractBlockToSection(main, ".info");
+    }
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Auto Blocking failed', error);
@@ -73,22 +97,22 @@ async function loadEager(doc) {
   }
 }
 
-/**
- * Adds the favicon.
- * @param {string} href The favicon URL
- */
-export function addFavIcon(href) {
-  const link = document.createElement('link');
-  link.rel = 'icon';
-  link.type = 'image/svg+xml';
-  link.href = href;
-  const existingLink = document.querySelector('head link[rel="icon"]');
-  if (existingLink) {
-    existingLink.parentElement.replaceChild(link, existingLink);
-  } else {
-    document.getElementsByTagName('head')[0].appendChild(link);
-  }
-}
+// /**
+//  * Adds the favicon.
+//  * @param {string} href The favicon URL
+//  */
+// export function addFavIcon(href) {
+//   const link = document.createElement('link');
+//   link.rel = 'icon';
+//   link.type = 'image/svg+xml';
+//   link.href = href;
+//   const existingLink = document.querySelector('head link[rel="icon"]');
+//   if (existingLink) {
+//     existingLink.parentElement.replaceChild(link, existingLink);
+//   } else {
+//     document.getElementsByTagName('head')[0].appendChild(link);
+//   }
+//}
 
 /**
  * Loads everything that doesn't need to be delayed.
@@ -106,7 +130,7 @@ async function loadLazy(doc) {
   loadFooter(doc.querySelector('footer'));
 
   loadCSS(`${window.hlx.codeBasePath}/styles/lazy-styles.css`);
-  addFavIcon(`${window.hlx.codeBasePath}/styles/favicon.svg`);
+  //addFavIcon(`${window.hlx.codeBasePath}/styles/favicon.svg`);
   sampleRUM('lazy');
   sampleRUM.observe(main.querySelectorAll('div[data-block-name]'));
   sampleRUM.observe(main.querySelectorAll('picture > img'));
