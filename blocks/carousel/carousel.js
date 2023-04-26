@@ -137,14 +137,16 @@ async function show(idx) {
   console.log("SHOW!");
   const items = [...globalBlock.querySelectorAll(".carousel-item")];
   const bullets = [...globalBlock.querySelectorAll("button.bullet-btn")];
-  items.forEach((item) => {fadeOut(item, 1000);});
+  items.forEach((item) => {fadeOut(item, 1500);});
+//  fadeOut(items[idx-1], 1500);
   bullets.forEach((button) => button.classList.remove("bullet-btn--active"));
   await new Promise(r => setTimeout(r, 500));
   items.forEach((item) => {item.classList.remove("carousel-item--visible");});
   items[idx].classList.add("carousel-item--visible");
   bullets[idx].classList.add("bullet-btn--active");
-  await new Promise(r => setTimeout(r, 50));
-  items.forEach((item) => {fadeIn(item, 1000);});
+  await new Promise(r => setTimeout(r, 100));
+  //items.forEach((item) => {fadeIn(item, 1500);});
+  fadeIn(items[idx], 1500);
 }
 
 async function changePage() {
@@ -155,9 +157,9 @@ async function changePage() {
 
   //await new Promise(r => setTimeout(r, 2000));
 
-  if (k==3) {
+  if (k>=3) {
     k = 0;
   }
 }
 
-setInterval(changePage, 2000);
+setInterval(changePage, 3000);
