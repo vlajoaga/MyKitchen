@@ -1,6 +1,6 @@
 import { stringToHTML } from "../../scripts/template.js";
 
-var k = 0;
+var k = 1;
 var globalBlock;
 
 /**
@@ -13,13 +13,13 @@ function showCarouselImage(block, index) {
   const visibleItemIdx = items.findIndex((item) =>
     item.classList.contains("carousel-item--visible")
   );
-  const show = (idx) => {
-    const bullets = [...block.querySelectorAll("button.bullet-btn")];
-    items.forEach((item) => item.classList.remove("carousel-item--visible"));
-    bullets.forEach((button) => button.classList.remove("bullet-btn--active"));
-    items[idx].classList.add("carousel-item--visible");
-    bullets[idx].classList.add("bullet-btn--active");
-  };
+  // const show = (idx) => {
+  //   const bullets = [...block.querySelectorAll("button.bullet-btn")];
+  //   items.forEach((item) => item.classList.remove("carousel-item--visible"));
+  //   bullets.forEach((button) => button.classList.remove("bullet-btn--active"));
+  //   items[idx].classList.add("carousel-item--visible");
+  //   bullets[idx].classList.add("bullet-btn--active");
+  // };
 
   let itemIdxToShow = 0;
   switch (index) {
@@ -113,21 +113,47 @@ export default async function decorate(block) {
   initCarouselEvents(block);
 }
 
-function changePage() {
+async function fadeOut( el, speed ) {
+    var seconds = speed/1000;
+    el.style.transition = "opacity "+seconds+"s ease";
+
+    el.style.opacity = 0;
+    setTimeout(function() {
+        //el.parentNode.removeChild(el);
+    }, speed);
+}
+
+function fadeIn( el, speed ) {
+  var seconds = speed/1000;
+  el.style.transition = "opacity "+seconds+"s ease";
+
+  el.style.opacity = 100;
+  setTimeout(function() {
+      //el.parentNode.removeChild(el);
+  }, speed);
+}
+
+async function show(idx) {
+  console.log("SHOW!");
+  const items = [...globalBlock.querySelectorAll(".carousel-item")];
+  const bullets = [...globalBlock.querySelectorAll("button.bullet-btn")];
+  items.forEach((item) => {fadeOut(item, 1000);});
+  bullets.forEach((button) => button.classList.remove("bullet-btn--active"));
+  await new Promise(r => setTimeout(r, 500));
+  items.forEach((item) => {item.classList.remove("carousel-item--visible");});
+  items[idx].classList.add("carousel-item--visible");
+  bullets[idx].classList.add("bullet-btn--active");
+  await new Promise(r => setTimeout(r, 50));
+  items.forEach((item) => {fadeIn(item, 1000);});
+}
+
+async function changePage() {
   ++k;
   console.log("k = "+k);
-  const items = [...globalBlock.querySelectorAll(".carousel-item")];
 
-  const show = (idx) => {
-    const bullets = [...globalBlock.querySelectorAll("button.bullet-btn")];
-    items.forEach((item) => item.classList.remove("carousel-item--visible"));
-    bullets.forEach((button) => button.classList.remove("bullet-btn--active"));
-    items[idx].classList.add("carousel-item--visible");
-    bullets[idx].classList.add("bullet-btn--active");
-  };
+  await show(k-1);
 
-
-  show(k-1);
+  //await new Promise(r => setTimeout(r, 2000));
 
   if (k==3) {
     k = 0;
