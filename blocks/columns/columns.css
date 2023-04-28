@@ -14,7 +14,7 @@
 
 .columns > div > .columns-img-col {
   order: 0;
-  border:10px solid red;
+  border:1px solid red;
 }
 
 .columns > div > .columns-img-col img {
@@ -23,7 +23,7 @@
 
 .columns > div > .columns-img-col2 {
   order: 0;
-  border:10px solid green;
+  border:1px solid green;
 }
 
 .columns > div > .columns-img-col2 img {

@@ -58,6 +58,9 @@ function buildAutoBlocks(main) {
   const template = getMetadata("template");
   try {
     //buildHeroBlock(main);
+    if (template == "adventures") {
+      buildHeroBlock(main);
+    }
     if (template === "adventure") {
       extractBlockToSection(main, ".tabs");
       extractBlockToSection(main, ".info");
